@@ -5,26 +5,27 @@ using UnityEngine;
 
 public class Assignment1 : ProcessingLite.GP21
 {
-    float xPos;
-    float yPos;
-    
+    float xPos = 4.0f;
+    float yPos = 3.0f;
 
     // Start is called before the first frame update
     void Start()
     {
-        PrintLetterM(xPos,yPos);
-        PrintLetterA(xPos, yPos);
-        PrintLetterR(xPos, yPos);
-        PrintLetterK(xPos, yPos);
-        PrintLetterU(xPos, yPos);
-        PrintLetterS(xPos, yPos);
-        
-        PrintLetterMOutline(xPos,yPos);
+        Stroke(50, 50, 50);
+        PrintLetterMOutline(xPos, yPos);
         PrintLetterAOutline(xPos, yPos);
         PrintLetterROutline(xPos, yPos);
         PrintLetterKOutline(xPos, yPos);
         PrintLetterUOutline(xPos, yPos);
         PrintLetterSOutline(xPos, yPos);
+
+        Stroke(255, 255, 255);
+        PrintLetterM(xPos, yPos);
+        PrintLetterA(xPos, yPos);
+        PrintLetterR(xPos, yPos);
+        PrintLetterK(xPos, yPos);
+        PrintLetterU(xPos, yPos);
+        PrintLetterS(xPos, yPos);
     }
 
     private void PrintLetterM(float x, float y)
@@ -76,52 +77,46 @@ public class Assignment1 : ProcessingLite.GP21
     private void PrintLetterMOutline(float x, float y)
     {
         // M
-        Line(5, 7, 5, 3);
-        Line(5, 7, 6, 5);
-        Line(6, 5, 7, 7);
-        Line(7, 7, 7, 3);
+        Line(4.5f, 7, 4.5f, 3);
+        Line(4.5f, 7, 5.5f, 5);
+        Line(5.5f, 5, 6.5f, 7);
+        Line(6.5f, 7, 6.5f, 3);
     }
     private void PrintLetterAOutline(float x, float y)
     {
         // A
-        Line(9, 3, 10, 7);
-        Line(10, 7, 11, 3);
-        Line(9.4f, 5, 10.5f, 5);
+        Line(8.5f, 3, 9.5f, 7);
+        Line(9.5f, 7, 10.5f, 3);
+        Line(8.9f, 5, 10, 5);
     }
     private void PrintLetterROutline(float x, float y)
     {
         // R
-        Line(13, 3, 13, 6);
+        Line(12.5f, 3, 12.5f, 6);
         Circle(14, 6, 2);
-        Line(13, 5.6f, 15, 3);
+        Line(12.5f, 5.6f, 14.5f, 3);
     }
     private void PrintLetterKOutline(float x, float y)
     {
         // K
-        Line(17, 3, 17, 7);
-        Line(17, 5, 19, 7);
-        Line(17, 5, 19, 3);
+        Line(16.5f, 3, 16.5f, 7);
+        Line(16.5f, 5, 18.5f, 7);
+        Line(16.5f, 5, 18.5f, 3);
     }
     private void PrintLetterUOutline(float x, float y)
     {
         // U
-        Line(21, 3, 21, 7);
-        Line(23, 3, 23, 7);
-        Line(21, 3, 23, 3);
+        Line(20.5f, 3, 20.5f, 7);
+        Line(22.5f, 3, 22.5f, 7);
+        Line(20.5f, 3, 22.5f, 3);
     }
     private void PrintLetterSOutline(float x, float y)
     {
         //S
-        Line(26, 3, 27, 3);
-        Line(27, 3, 27, 5);
-        Line(27, 5, 25, 5);
-        Line(25, 5, 25, 7);
-        Line(25, 7, 27, 7);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
+        Line(25.5f, 3, 26.5f, 3);
+        Line(26.5f, 3, 26.5f, 5);
+        Line(26.5f, 5, 24.5f, 5);
+        Line(24.5f, 5, 24.5f, 7);
+        Line(24.5f, 7, 26.5f, 7);
     }
 }
