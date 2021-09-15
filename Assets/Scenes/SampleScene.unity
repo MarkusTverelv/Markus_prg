@@ -154,6 +154,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lines: 30
+  lineDensity: 25
+  lineStartPoint: {x: 10, y: 15}
+  lineEndPoint: {x: 15, y: 10}
 --- !u!114 &261026333
 MonoBehaviour:
   m_ObjectHideFlags: 0
