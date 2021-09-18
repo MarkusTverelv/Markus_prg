@@ -14,7 +14,7 @@ public class Assignment2 : ProcessingLite.GP21
 
     private void Start()
     {
-        for (int x = 0, y = lines; x < lines; x++, y--)
+        for (int x = 0, y = lines; x <= lines; x++, y--)
         {
             Line(0, y, x, 0);
 
