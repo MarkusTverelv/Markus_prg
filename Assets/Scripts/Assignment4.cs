@@ -7,14 +7,15 @@ public class Assignment4 : ProcessingLite.GP21
     float xMovement = 0.0f;
     float yMovement = 0.0f;
 
+    [Range(0.005f, 1.0f)]
     public float maxSpeed;
-    public float circleSpeed;
-    public float squareVelocity = 10.0f;
-    public int acceleration;
+    public float speed;
 
-    Vector2 dir;
     Vector2 circlePosition;
     Vector2 squarePosition;
+
+    Vector2 moveDirection;
+    Vector2 squareVelocity;
 
     // Start is called before the first frame update
     void Start()
@@ -27,53 +28,61 @@ public class Assignment4 : ProcessingLite.GP21
     {
         Background(0);
 
-        xMovement = Input.GetAxisRaw("Horizontal");
-        yMovement = Input.GetAxisRaw("Vertical");
+        xMovement = Input.GetAxisRaw("Horizontal") * speed * Time.deltaTime;
+        yMovement = Input.GetAxisRaw("Vertical") * speed * Time.deltaTime;
 
         Circle(circlePosition.x, circlePosition.y, 2);
         Square(squarePosition.x, squarePosition.y, 2);
 
-        dir = new Vector2(xMovement, yMovement);
-        dir.Normalize();
+        moveDirection = new Vector2(xMovement, yMovement);
+        moveDirection.Normalize();
 
-        Move();
+        MoveCircle();
+        MoveSquare();
+
         ScreenWarp();
     }
     private void ScreenWarp()
     {
-        if (circlePosition.x >= Width)
-            circlePosition.x = 0;
-        else if (circlePosition.x <= 0)
-            circlePosition.x = Width;
+        squarePosition.x = (squarePosition.x + Width) % Width;
+        squarePosition.y = (squarePosition.y + Height) % Height;
 
-        if (squarePosition.x >= Width)
-            squarePosition.x = 0;
-        else if (squarePosition.x <= 0)
-            squarePosition.x = Width;
+        circlePosition.x = (circlePosition.x + Width) % Width;
+        circlePosition.y = (circlePosition.y + Height) % Height;
 
-        if (circlePosition.y >= Height)
-            circlePosition.y = 0;
-        else if (circlePosition.y <= 0)
-            circlePosition.y = Height;
+        //if (circlePosition.x >= Width)
+        //    circlePosition.x = 0;
+        //else if (circlePosition.x <= 0)
+        //    circlePosition.x = Width;
 
-        if (squarePosition.y >= Height)
-            squarePosition.y = 0;
-        else if (squarePosition.y <= 0)
-            squarePosition.y = Height;
+        //if (squarePosition.x >= Width)
+        //    squarePosition.x = 0;
+        //else if (squarePosition.x <= 0)
+        //    squarePosition.x = Width;
+
+        //if (circlePosition.y >= Height)
+        //    circlePosition.y = 0;
+        //else if (circlePosition.y <= 0)
+        //    circlePosition.y = Height;
+
+        //if (squarePosition.y >= Height)
+        //    squarePosition.y = 0;
+        //else if (squarePosition.y <= 0)
+        //    squarePosition.y = Height;
     }
-    private void Move()
+    private void MoveCircle()
     {
-        if (xMovement != 0 || yMovement != 0)
-        {
-            circlePosition += dir * Time.deltaTime * circleSpeed;
+        circlePosition += new Vector2(xMovement, yMovement);
+    }
+    private void MoveSquare()
+    {
+        squareVelocity += moveDirection * Time.deltaTime;
 
-            squareVelocity += acceleration * Time.deltaTime;
-            squarePosition += dir * squareVelocity * Time.deltaTime;
-        }
-        else
-            squareVelocity = 10;
-
-        if (squareVelocity > maxSpeed)
-            squareVelocity = maxSpeed;
+        if (squareVelocity.magnitude > maxSpeed)
+            squareVelocity = squareVelocity.normalized * maxSpeed;
+        else if (moveDirection == Vector2.zero)
+            squareVelocity *= 0.993f;
+        
+        squarePosition += squareVelocity;
     }
 }
