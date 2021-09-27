@@ -1,15 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Assignment5 : ProcessingLite.GP21
 {
     Player playerClass = new Player();
-    BallManager ballManager = new BallManager();
+    BallManager ballManager;
+    public Canvas mainCanvas;
 
+    private void Awake()
+    {
+        ballManager = new BallManager(playerClass, mainCanvas);
+        playerClass.PlayerPosition = new Vector2(Width / 2, Height / 2); //middle of the screen
+        Time.timeScale = 1;
+        mainCanvas.enabled = false;
+    }
     void Start()
     {
-        playerClass.PlayerPosition = new Vector2(Width / 2, Height / 2); //middle of the screen
         ballManager.CreateBalls();
     }
 
@@ -17,10 +25,9 @@ public class Assignment5 : ProcessingLite.GP21
     {
         Background(0);
         playerClass.Move();
-        playerClass.ScreenWarp(Width, Height);
-        Circle(playerClass.PlayerPosition.x, playerClass.PlayerPosition.y, 2);
-
+        Circle(playerClass.PlayerPosition.x, playerClass.PlayerPosition.y, playerClass.Size);
         ballManager.UpdateBalls();
+        playerClass.ScreenWarp(Width, Height);
     }
 }
 
@@ -28,9 +35,10 @@ class Player
 {
     private Vector2 position;
     private float speed = 10f;
-    private float maxSpeed = 0.3f;
+    private float maxSpeed = 0.99f;
     private Vector2 velocity;
     private Vector2 acceleration;
+    private float size = 2;
 
     public Vector2 PlayerPosition
     {
@@ -39,6 +47,15 @@ class Player
         {
             if (position != null)
                 position = value;
+        }
+    }
+    public float Size
+    {
+        get { return size; }
+        set
+        {
+            if (size != 0)
+                size = value;
         }
     }
 
@@ -71,12 +88,19 @@ class Player
 class Ball : ProcessingLite.GP21
 {
     //Our class variables
-    Vector2 position; //Ball position
+    private Vector2 position; //Ball position
     Vector2 velocity; //Ball direction
 
     float size = 2;
-    Color color;
 
+    public Vector2 Position
+    {
+        get { return position; }
+    }
+    public float Size
+    {
+        get { return size; }
+    }
     //Ball Constructor, called when we type new Ball(x, y);
     public Ball(float x, float y)
     {
@@ -108,21 +132,19 @@ class Ball : ProcessingLite.GP21
         if (position.x + size / 2 >= Width || position.x - size / 2 <= 0)
             velocity.x *= -1;
     }
-    public void ChangeColor()
-    {
-        color.g = Random.Range(0.0f, 255f);
-        color.b = Random.Range(0.0f, 255f);
-        color.r = Random.Range(0.0f, 255f);
-    }
 }
 class BallManager : ProcessingLite.GP21
 {
+    Player player;
     int numberOfBalls = 10;
     Ball[] balls;
+    Canvas mainCanvas;
 
-    public BallManager()
+    public BallManager(Player playerClass, Canvas canvas)
     {
+        player = playerClass;
         balls = new Ball[numberOfBalls];
+        mainCanvas = canvas;
     }
     public void CreateBalls()
     {
@@ -140,8 +162,36 @@ class BallManager : ProcessingLite.GP21
         {
             balls[i].UpdatePos();
             balls[i].Draw();
+
+            CircleCollision(player.PlayerPosition.x, player.PlayerPosition.y, player.Size / 2, balls[i].Position.x, balls[i].Position.y, balls[i].Size / 2);
+
             balls[i].Bounce();
-            balls[i].ChangeColor();
+        }
+    }
+    bool CircleCollision(float x1, float y1, float size1, float x2, float y2, float size2)
+    {
+        float maxDistance = size1 + size2;
+        Debug.Log(x1 + "" + y1);
+
+        //first a quick check to see if we are too far away in x or y direction
+        //if we are far away we don't collide so just return false and be done.
+        if (Mathf.Abs(x1 - x2) > maxDistance || Mathf.Abs(y1 - y2) > maxDistance)
+        {
+            return false;
+        }
+        //we then run the slower distance calculation
+        //Distance uses Pythagoras to get exact distance, if we still are to far away we are not colliding.
+        else if (Vector2.Distance(new Vector2(x1, y1), new Vector2(x2, y2)) > maxDistance)
+        {
+            return false;
+        }
+        //We now know the points are closer then the distance so we are colliding!
+        else
+        {
+            Debug.Log("player is colliding with a cirlce at x: " + x2 + " y: " + y2);
+            Time.timeScale = 0;
+            mainCanvas.enabled = true;
+            return true;
         }
     }
 }
