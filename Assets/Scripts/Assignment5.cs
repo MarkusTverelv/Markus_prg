@@ -34,8 +34,8 @@ public class Assignment5 : ProcessingLite.GP21
 class Player
 {
     private Vector2 position;
-    private float speed = 10f;
-    private float maxSpeed = 0.99f;
+    private float speed = 10.0f;
+    private float maxSpeed = 1.0f;
     private Vector2 velocity;
     private Vector2 acceleration;
     private float size = 2;
@@ -89,9 +89,9 @@ class Ball : ProcessingLite.GP21
 {
     //Our class variables
     private Vector2 position; //Ball position
-    Vector2 velocity; //Ball direction
+    private Vector2 velocity; //Ball direction
+    private float size = 2;
 
-    float size = 2;
 
     public Vector2 Position
     {
@@ -171,7 +171,6 @@ class BallManager : ProcessingLite.GP21
     bool CircleCollision(float x1, float y1, float size1, float x2, float y2, float size2)
     {
         float maxDistance = size1 + size2;
-        Debug.Log(x1 + "" + y1);
 
         //first a quick check to see if we are too far away in x or y direction
         //if we are far away we don't collide so just return false and be done.
@@ -188,7 +187,6 @@ class BallManager : ProcessingLite.GP21
         //We now know the points are closer then the distance so we are colliding!
         else
         {
-            Debug.Log("player is colliding with a cirlce at x: " + x2 + " y: " + y2);
             Time.timeScale = 0;
             mainCanvas.enabled = true;
             return true;
