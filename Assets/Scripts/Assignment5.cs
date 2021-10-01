@@ -8,6 +8,8 @@ public class Assignment5 : ProcessingLite.GP21
     Player playerClass = new Player();
     BallManager ballManager;
     public Canvas mainCanvas;
+    float timer;
+    public Text timerText;
 
     private void Awake()
     {
@@ -23,6 +25,8 @@ public class Assignment5 : ProcessingLite.GP21
 
     void Update()
     {
+        timer += Time.deltaTime;
+        timerText.text = timer.ToString();
         Background(0);
         playerClass.Move();
         Circle(playerClass.PlayerPosition.x, playerClass.PlayerPosition.y, playerClass.Size);
@@ -92,7 +96,6 @@ class Ball : ProcessingLite.GP21
     private Vector2 velocity; //Ball direction
     private float size = 2;
 
-
     public Vector2 Position
     {
         get { return position; }
@@ -123,8 +126,9 @@ class Ball : ProcessingLite.GP21
     public void UpdatePos()
     {
         position += velocity * Time.deltaTime;
+        Bounce();
     }
-    public void Bounce()
+    private void Bounce()
     {
         if (position.y + size / 2 >= Height || position.y - size / 2 <= 0)
             velocity.y *= -1;
@@ -163,14 +167,12 @@ class BallManager : ProcessingLite.GP21
             balls[i].UpdatePos();
             balls[i].Draw();
 
-            CircleCollision(player.PlayerPosition.x, player.PlayerPosition.y, player.Size / 2, balls[i].Position.x, balls[i].Position.y, balls[i].Size / 2);
-
-            balls[i].Bounce();
+            CircleCollision(player.PlayerPosition.x, player.PlayerPosition.y, player.Size, balls[i].Position.x, balls[i].Position.y, balls[i].Size);
         }
     }
     bool CircleCollision(float x1, float y1, float size1, float x2, float y2, float size2)
     {
-        float maxDistance = size1 + size2;
+        float maxDistance = size1 / 2 + size2 / 2;
 
         //first a quick check to see if we are too far away in x or y direction
         //if we are far away we don't collide so just return false and be done.
