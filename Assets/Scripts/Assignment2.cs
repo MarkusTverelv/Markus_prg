@@ -5,14 +5,18 @@ using UnityEngine;
 public class Assignment2 : ProcessingLite.GP21
 {
     public int lines;
-
     public int lineDensity;
     public Vector2 lineStartPoint;
     public Vector2 lineEndPoint;
 
-    ParabolicCurves pc;
-
+    ParabolicCurves parabolicCurve;
+    
     private void Start()
+    {
+        CreateParabolicCurve();
+    }
+
+    private void CreateParabolicCurve()
     {
         for (int x = 0, y = lines; x <= lines; x++, y--)
         {
@@ -24,9 +28,12 @@ public class Assignment2 : ProcessingLite.GP21
                 Stroke(255);
         }
     }
+
     private void Update()
     {
-        pc = new ParabolicCurves(lineDensity, lineEndPoint, lineStartPoint);
+        Background(0);
+        
+        parabolicCurve = new ParabolicCurves(lineDensity, lineEndPoint, lineStartPoint);
     }
 }
 public class ParabolicCurves : ProcessingLite.GP21

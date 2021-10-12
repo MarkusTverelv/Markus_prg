@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class Assignment3 : ProcessingLite.GP21
 {
-    public Vector2 circlePosition;
-    public float circleDiameter;
-    Vector2 velocity;
-
-    public float speed;
     public float maxSpeed;
+    public float speed;
+    public float circleDiameter;
+
+    public Vector2 circlePosition;
+
+    Vector2 velocity;
 
     private void Start()
     {
@@ -20,13 +21,14 @@ public class Assignment3 : ProcessingLite.GP21
     // Update is called once per frame
     void Update()
     {
-        Background(0, 0, 0);
+        Background(0);
 
         if (Input.GetMouseButtonDown(0))
         {
             circlePosition = new Vector2(MouseX, MouseY);
             velocity = Vector2.zero;
         }
+
         if (Input.GetMouseButtonUp(0))
             velocity = new Vector2(MouseX, MouseY) - circlePosition;
 
@@ -36,21 +38,25 @@ public class Assignment3 : ProcessingLite.GP21
         circlePosition += velocity * speed * Time.deltaTime;
         Circle(circlePosition.x, circlePosition.y, circleDiameter);
 
-        Bounce();
+        if (ScreenExtentBounce())
+            Fill(Random.Range(0, 255), Random.Range(0, 255), Random.Range(0, 255));
+        else
+            return;
     }
 
-    private void Bounce()
+    private bool ScreenExtentBounce()
     {
         if (circlePosition.y + circleDiameter / 2 >= Height || circlePosition.y - circleDiameter / 2 <= 0)
         {
             velocity.y *= -1;
-            Fill(Random.Range(0, 255), Random.Range(0, 255), Random.Range(0, 255));
+            return true;
         }
-        if (circlePosition.x + circleDiameter / 2 >= Width || circlePosition.x - circleDiameter / 2 <= 0)
+        else if (circlePosition.x + circleDiameter / 2 >= Width || circlePosition.x - circleDiameter / 2 <= 0)
         {
             velocity.x *= -1;
-            Fill(Random.Range(0, 255), Random.Range(0, 255), Random.Range(0, 255));
+            return true;
         }
 
+        return false;
     }
 }

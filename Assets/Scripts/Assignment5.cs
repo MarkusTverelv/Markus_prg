@@ -7,14 +7,17 @@ public class Assignment5 : ProcessingLite.GP21
 {
     Player playerClass = new Player();
     BallManager ballManager;
+
     public Canvas mainCanvas;
-    float timer;
     public Text timerText;
+
+    float timer;
 
     private void Awake()
     {
         ballManager = new BallManager(playerClass, mainCanvas);
         playerClass.PlayerPosition = new Vector2(Width / 2, Height / 2); //middle of the screen
+
         Time.timeScale = 1;
         mainCanvas.enabled = false;
     }
@@ -25,11 +28,14 @@ public class Assignment5 : ProcessingLite.GP21
 
     void Update()
     {
+        Background(0);
+
         timer += Time.deltaTime;
         timerText.text = timer.ToString();
-        Background(0);
-        playerClass.Move();
+
         Circle(playerClass.PlayerPosition.x, playerClass.PlayerPosition.y, playerClass.Size);
+
+        playerClass.Move();
         ballManager.UpdateBalls();
         playerClass.ScreenWarp(Width, Height);
     }
@@ -38,10 +44,11 @@ public class Assignment5 : ProcessingLite.GP21
 class Player
 {
     private Vector2 position;
-    private float speed = 10.0f;
-    private float maxSpeed = 1.0f;
     private Vector2 velocity;
     private Vector2 acceleration;
+
+    private float speed = 10.0f;
+    private float maxSpeed = 1.0f;
     private float size = 2;
 
     public Vector2 PlayerPosition
@@ -68,6 +75,7 @@ class Player
         position.x = (position.x + width) % width;
         position.y = (position.y + height) % height;
     }
+
     public void Move()
     {
         //Input from player
@@ -96,14 +104,15 @@ class Ball : ProcessingLite.GP21
     private Vector2 velocity; //Ball direction
     private float size = 2;
 
-    public Vector2 Position
+    public Vector2 Position     //Property with get access
     {
         get { return position; }
     }
-    public float Size
+    public float Size       //Property with get access
     {
         get { return size; }
     }
+
     //Ball Constructor, called when we type new Ball(x, y);
     public Ball(float x, float y)
     {
@@ -128,6 +137,7 @@ class Ball : ProcessingLite.GP21
         position += velocity * Time.deltaTime;
         Bounce();
     }
+
     private void Bounce()
     {
         if (position.y + size / 2 >= Height || position.y - size / 2 <= 0)
@@ -140,9 +150,10 @@ class Ball : ProcessingLite.GP21
 class BallManager : ProcessingLite.GP21
 {
     Player player;
-    int numberOfBalls = 10;
-    Ball[] balls;
+    Ball[] balls; 
     Canvas mainCanvas;
+
+    int numberOfBalls = 10;
 
     public BallManager(Player playerClass, Canvas canvas)
     {
@@ -150,15 +161,14 @@ class BallManager : ProcessingLite.GP21
         balls = new Ball[numberOfBalls];
         mainCanvas = canvas;
     }
+
     public void CreateBalls()
     {
-        //A loop that can be used for creating multiple balls.
+        //A loop that creates multiple balls.
         for (int i = 0; i < balls.Length; i++)
-        {
-            //Add some code for creating balls here.
             balls[i] = new Ball(Random.Range(5, Width - 5), Random.Range(5, Height - 5));
-        }
     }
+
     public void UpdateBalls()
     {
         //Tell each ball to update it's position
@@ -167,25 +177,24 @@ class BallManager : ProcessingLite.GP21
             balls[i].UpdatePos();
             balls[i].Draw();
 
-            CircleCollision(player.PlayerPosition.x, player.PlayerPosition.y, player.Size, balls[i].Position.x, balls[i].Position.y, balls[i].Size);
+            CircleCollision(player, balls[i]);
         }
     }
-    bool CircleCollision(float x1, float y1, float size1, float x2, float y2, float size2)
+
+    bool CircleCollision(Player player, Ball ball)
     {
-        float maxDistance = size1 / 2 + size2 / 2;
+        float maxDistance = player.Size / 2 + ball.Size / 2;
 
         //first a quick check to see if we are too far away in x or y direction
         //if we are far away we don't collide so just return false and be done.
-        if (Mathf.Abs(x1 - x2) > maxDistance || Mathf.Abs(y1 - y2) > maxDistance)
-        {
+        if (Mathf.Abs(player.PlayerPosition.x - ball.Position.x) > maxDistance || Mathf.Abs(player.PlayerPosition.y - ball.Position.y) > maxDistance)
             return false;
-        }
+
         //we then run the slower distance calculation
         //Distance uses Pythagoras to get exact distance, if we still are to far away we are not colliding.
-        else if (Vector2.Distance(new Vector2(x1, y1), new Vector2(x2, y2)) > maxDistance)
-        {
+        else if (Vector2.Distance(new Vector2(player.PlayerPosition.x, player.PlayerPosition.y), new Vector2(ball.Position.x, ball.Position.y)) > maxDistance)
             return false;
-        }
+
         //We now know the points are closer then the distance so we are colliding!
         else
         {
